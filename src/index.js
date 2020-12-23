@@ -163,7 +163,9 @@ class YouTube {
      *  .catch(console.error);
      */
     search(query, limit = 5, options = {}) {
-        return this.request.getPaginated(Constants.ENDPOINTS.Search, limit, Object.assign(options, { q: query, part: Constants.PARTS.Search }))
+        const combinedOptions = Object.assign(options, { q: query });
+        combinedOptions.part = combinedOptions.part || Constants.PARTS.Search;
+        return this.request.getPaginated(Constants.ENDPOINTS.Search, limit, combinedOptions)
             .then(result => result.map(item => {
                 if (item.id.kind === Constants.KINDS.Video) return new Video(this, item);
                 if (item.id.kind === Constants.KINDS.Playlist) return new Playlist(this, item);
